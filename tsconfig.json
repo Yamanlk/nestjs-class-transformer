@@ -3,8 +3,6 @@
     "target": "es6",
     "module": "commonjs",
     "declaration": true,
-    "outDir": "./dist",
-    "rootDir": "./lib",
     "removeComments": true,
 
     /* Strict Type-Checking Options */
@@ -19,7 +17,7 @@
 
     /* Additional Checks */
     "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    "noUnusedParameters": false,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedIndexedAccess": true,
@@ -30,7 +28,5 @@
 
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true
-  },
-  "include": ["lib/**/*"],
-  "exclude": ["node_modules", "**/*.spec.ts", "tests"]
+  }
 }
