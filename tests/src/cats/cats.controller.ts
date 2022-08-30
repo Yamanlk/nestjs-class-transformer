@@ -1,5 +1,5 @@
 import { Controller, Get } from "@nestjs/common";
-import { CatDto, CatNestedDto } from "./dto/cat.dto";
+import { CatAsyncDto, CatDto, CatNestedDto } from "./dto/cat.dto";
 
 @Controller("cats")
 export class CatsController {
@@ -13,5 +13,10 @@ export class CatsController {
   @Get("nested")
   catsNested() {
     return new CatNestedDto();
+  }
+
+  @Get("async")
+  catsAsync() {
+    return new CatAsyncDto();
   }
 }

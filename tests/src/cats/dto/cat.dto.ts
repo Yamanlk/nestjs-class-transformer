@@ -1,5 +1,8 @@
 import { Transformer } from "../../../../lib";
-import { TransformerService } from "../../tranformer.service";
+import {
+  AsyncTransformerService,
+  TransformerService,
+} from "../../tranformer.service";
 
 export class CatDto {
   @Transformer(TransformerService)
@@ -8,4 +11,9 @@ export class CatDto {
 
 export class CatNestedDto {
   cat: CatDto = new CatDto();
+}
+
+export class CatAsyncDto {
+  @Transformer(AsyncTransformerService)
+  name!: string;
 }
