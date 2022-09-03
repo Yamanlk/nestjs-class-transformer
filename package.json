@@ -1,6 +1,6 @@
 {
   "name": "nestjs-class-transformer",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Community libarary that allows you to use DI to transform your dto",
   "main": "dist/index.js",
   "scripts": {
