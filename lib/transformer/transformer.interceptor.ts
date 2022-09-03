@@ -19,8 +19,12 @@ export class TransformerInterceptor implements NestInterceptor {
   ): Observable<any> | Promise<Observable<any>> {
     return next.handle().pipe(
       switchMap((body) => {
-        const promises = this._inPlaceTransform(body);
-        return of(Promise.allSettled(promises).then(() => body));
+        if (!isObject(body)) {
+          return of(body);
+        } else {
+          const promises = this._inPlaceTransform(body);
+          return of(Promise.allSettled(promises).then(() => body));
+        }
       })
     );
   }
