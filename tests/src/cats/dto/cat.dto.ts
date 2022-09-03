@@ -27,3 +27,12 @@ export class CatTypedDto {
     this.cat = cat;
   }
 }
+
+export class CatNestedArrayResolvedTypeDto {
+  @Type(() => CatDto)
+  cats!: CatDto[];
+
+  constructor(cats: any) {
+    this.cats = cats;
+  }
+}

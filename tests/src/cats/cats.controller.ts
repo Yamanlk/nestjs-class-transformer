@@ -1,5 +1,11 @@
 import { Controller, Get } from "@nestjs/common";
-import { CatAsyncDto, CatDto, CatNestedDto, CatTypedDto } from "./dto/cat.dto";
+import {
+  CatAsyncDto,
+  CatDto,
+  CatNestedArrayResolvedTypeDto,
+  CatNestedDto,
+  CatTypedDto,
+} from "./dto/cat.dto";
 
 @Controller("cats")
 export class CatsController {
@@ -18,6 +24,11 @@ export class CatsController {
   @Get("typed-nested")
   catsTypedNested() {
     return new CatTypedDto({ name: "Lu" });
+  }
+
+  @Get("typed-nested-array")
+  catsTypedNestedArray() {
+    return new CatNestedArrayResolvedTypeDto([{ name: "Lu" }]);
   }
 
   @Get("async")

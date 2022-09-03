@@ -63,6 +63,21 @@ describe("Transformer", () => {
       });
   });
 
+  it("should resolve nested arrays types using type decorator", (done) => {
+    // given
+
+    // when
+    request(server)
+      .get("/cats/typed-nested-array")
+      .expect(200)
+      .end((err, { body }) => {
+        // then
+        expect(body.cats[0].name).toEqual("Transformed Name");
+
+        done();
+      });
+  });
+
   afterEach(async () => {
     await app.close();
   });

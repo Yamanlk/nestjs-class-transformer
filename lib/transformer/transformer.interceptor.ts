@@ -33,9 +33,7 @@ export class TransformerInterceptor implements NestInterceptor {
     type = type ?? object.constructor;
 
     if (isArray(object)) {
-      object.forEach((_obj) =>
-        this._inPlaceTransform(_obj, undefined, promises)
-      );
+      object.forEach((_obj) => this._inPlaceTransform(_obj, type, promises));
 
       return promises;
     }
