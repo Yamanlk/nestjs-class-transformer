@@ -9,6 +9,7 @@ export class TransformerService implements Transform {
   }
 }
 
+@Injectable()
 export class AsyncTransformerService implements Transform {
   transform(params: Omit<TransformFnParams, "type">) {
     return Promise.resolve("Transformed Name");
