@@ -1,8 +1,10 @@
-import { TransformerMetadata } from './meta-storage.interface';
+import { TypeMetadata } from "class-transformer";
+import { TransformerMetadata } from "./meta-storage.interface";
 
 export class MetaStorage {
   private static _metaStorage?: MetaStorage;
 
+  private _typeMetadatas = new Map<Function, Map<string, TypeMetadata>>();
   private _transformerMetadata: Map<Function, TransformerMetadata[]> =
     new Map();
 
@@ -35,12 +37,31 @@ export class MetaStorage {
     _metadataRecords.push(metadata);
   }
   public findTransformerMetadata(
-    target: Function,
+    target: Function
   ): readonly TransformerMetadata[] | undefined {
     if (!this._transformerMetadata.has(target)) {
       return undefined;
     }
     return this._transformerMetadata.get(target)!;
+  }
+
+  public addTypeMetadata(metadata: TypeMetadata) {
+    if (!this._typeMetadatas.has(metadata.target)) {
+      this._typeMetadatas.set(metadata.target, new Map<string, TypeMetadata>());
+    }
+    this._typeMetadatas
+      .get(metadata.target)!
+      .set(metadata.propertyName, metadata);
+  }
+
+  public findTypeMetadata(
+    target: Function,
+    propertyName: string
+  ): TypeMetadata | undefined {
+    if (!this._typeMetadatas.has(target)) {
+      return undefined;
+    }
+    return this._typeMetadatas.get(target)!.get(propertyName);
   }
 
   /**
@@ -65,7 +86,7 @@ export class MetaStorage {
 
   private _detectAndThrowDuplicateTransformers(
     records: TransformerMetadata[],
-    newRecord: TransformerMetadata,
+    newRecord: TransformerMetadata
   ) {
     if (records.some((meta) => meta.propertyName === newRecord.propertyName)) {
       throw {

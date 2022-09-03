@@ -48,6 +48,21 @@ describe("Transformer", () => {
       });
   });
 
+  it("should resolve nested properties types using type decorator", (done) => {
+    // given
+
+    // when
+    request(server)
+      .get("/cats/typed-nested")
+      .expect(200)
+      .end((err, { body }) => {
+        // then
+        expect(body.cat.name).toEqual("Transformed Name");
+
+        done();
+      });
+  });
+
   afterEach(async () => {
     await app.close();
   });

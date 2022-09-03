@@ -5,7 +5,7 @@ import {
   NestInterceptor,
 } from "@nestjs/common";
 import { ModuleRef } from "@nestjs/core";
-import { cloneDeep, isArray, isObject, pickBy, values } from "lodash";
+import { entries, isArray, isObject, pickBy } from "lodash";
 import { Observable, of, switchMap } from "rxjs";
 import { MetaStorage } from "../meta-storage/meta-storage";
 
@@ -19,19 +19,23 @@ export class TransformerInterceptor implements NestInterceptor {
   ): Observable<any> | Promise<Observable<any>> {
     return next.handle().pipe(
       switchMap((body) => {
-        const _body = cloneDeep(body);
-        const promises = this._inPlaceTransform(_body);
-        return of(Promise.allSettled(promises).then(() => _body));
+        const promises = this._inPlaceTransform(body);
+        return of(Promise.allSettled(promises).then(() => body));
       })
     );
   }
 
   private _inPlaceTransform(
     object: any,
+    type?: Function,
     promises: Promise<any>[] = []
   ): Promise<any>[] {
+    type = type ?? object.constructor;
+
     if (isArray(object)) {
-      object.forEach((_obj) => this._inPlaceTransform(_obj));
+      object.forEach((_obj) =>
+        this._inPlaceTransform(_obj, undefined, promises)
+      );
 
       return promises;
     }
@@ -40,8 +44,9 @@ export class TransformerInterceptor implements NestInterceptor {
       return promises;
     }
 
-    const metarecords =
-      MetaStorage.instance().findTransformerMetadata(object.constructor) ?? [];
+    const metarecords = type
+      ? MetaStorage.instance().findTransformerMetadata(type) ?? []
+      : [];
 
     promises.push(
       ...metarecords.map(async (metarecord) => {
@@ -55,13 +60,20 @@ export class TransformerInterceptor implements NestInterceptor {
       })
     );
 
-    const nested = values(pickBy({ ...object }, isObject));
+    const nested = entries(pickBy({ ...object }, isObject));
 
     if (nested.length === 0) {
       return promises;
     }
 
-    this._inPlaceTransform(nested);
+    for (const [key, value] of nested) {
+      const propType =
+        value.constructor ?? !!type
+          ? MetaStorage.instance().findTypeMetadata(type!, key)?.typeFunction
+          : undefined;
+
+      this._inPlaceTransform(value, propType?.(), promises);
+    }
 
     return promises;
   }

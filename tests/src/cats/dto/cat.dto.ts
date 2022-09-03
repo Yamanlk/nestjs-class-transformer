@@ -1,4 +1,5 @@
 import { Transformer } from "../../../../lib";
+import { Type } from "../../../../lib/transformer/type.decorator";
 import {
   AsyncTransformerService,
   TransformerService,
@@ -16,4 +17,13 @@ export class CatNestedDto {
 export class CatAsyncDto {
   @Transformer(AsyncTransformerService)
   name!: string;
+}
+
+export class CatTypedDto {
+  @Type(() => CatDto)
+  cat!: CatDto;
+
+  constructor(cat: any) {
+    this.cat = cat;
+  }
 }
