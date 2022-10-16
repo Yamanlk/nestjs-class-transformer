@@ -1,5 +1,5 @@
+import { Type } from "class-transformer";
 import { Transformer } from "../../../../lib";
-import { Type } from "../../../../lib/transformer/type.decorator";
 import {
   AsyncTransformerService,
   TransformerService,

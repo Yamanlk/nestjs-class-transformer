@@ -7,10 +7,13 @@ import {
 import { ModuleRef } from "@nestjs/core";
 import { entries, isArray, isObject, pickBy } from "lodash";
 import { Observable, of, switchMap } from "rxjs";
+import { ClassTransformerStableAPI } from "../class-transformer-stable-api/class-transformer-stable-api";
 import { MetaStorage } from "../meta-storage/meta-storage";
 
 @Injectable()
 export class TransformerInterceptor implements NestInterceptor {
+  private readonly classTransformerStableAPI = new ClassTransformerStableAPI();
+
   constructor(private _moduleRef: ModuleRef) {}
 
   intercept(
@@ -69,12 +72,11 @@ export class TransformerInterceptor implements NestInterceptor {
     }
 
     for (const [key, value] of nested) {
-      const propType =
-        value.constructor ?? !!type
-          ? MetaStorage.instance().findTypeMetadata(type!, key)?.typeFunction
-          : undefined;
-
-      this._inPlaceTransform(value, propType?.(), promises);
+      const metadata = this.classTransformerStableAPI.findTypeMetadata(
+        type,
+        key
+      );
+      this._inPlaceTransform(value, metadata?.typeFunction?.(), promises);
     }
 
     return promises;
