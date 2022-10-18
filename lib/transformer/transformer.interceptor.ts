@@ -37,8 +37,6 @@ export class TransformerInterceptor implements NestInterceptor {
     type?: Function,
     promises: Promise<any>[] = []
   ): Promise<any>[] {
-    type = type ?? object.constructor;
-
     if (isArray(object)) {
       object.forEach((_obj) => this._inPlaceTransform(_obj, type, promises));
 
@@ -48,6 +46,8 @@ export class TransformerInterceptor implements NestInterceptor {
     if (!isObject(object)) {
       return promises;
     }
+
+    type = type ?? object.constructor;
 
     const metarecords = type
       ? MetaStorage.instance().findTransformerMetadata(type) ?? []

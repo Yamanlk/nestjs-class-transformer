@@ -78,6 +78,22 @@ describe("Transformer", () => {
       });
   });
 
+  it("should resolve first level arrays", (done) => {
+    // given
+
+    // when
+    request(server)
+      .get("/cats/first-array")
+      .expect(200)
+      .end((err, { body }) => {
+        // then
+        body.forEach((cat: any) =>
+          expect(cat.name).toEqual("Transformed Name")
+        );
+        done();
+      });
+  });
+
   afterEach(async () => {
     await app.close();
   });

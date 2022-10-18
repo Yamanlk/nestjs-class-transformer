@@ -35,4 +35,9 @@ export class CatsController {
   catsAsync() {
     return new CatAsyncDto();
   }
+
+  @Get("first-array")
+  firstArrayCats() {
+    return [0, 0, 0, 0].map((_) => new CatDto());
+  }
 }
